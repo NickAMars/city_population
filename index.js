@@ -1,0 +1,91 @@
+const 	http 					                    = require('http'),
+        https 					                    = require('https'),
+        path     		                            = require('path'),
+		url  					                    = require('url'),
+        helpers 			                        = require('./helpers'),
+        {ROUTES, STATUS_CODE
+        ,PORT, STREAM, ERROR_MESSAGE}               = require('./constants'),
+        StringDecoder = require('string_decoder').StringDecoder;
+const 	repository = require('./repository');
+repository.init();
+const 	routes = require('./routes')(repository);
+const server = {};
+server.router =  {
+    [ROUTES.POPULATION]: routes.population
+};
+
+//Create Server
+server.httpServer = http.createServer((req, res) =>{
+ server.unifidedServer(req,res);
+});
+
+server.unifidedServer = function(req, res){
+	// get methods                              // gets an object
+	let method = req.method.toLowerCase(), headers = req.headers;
+	// gets the query parameters 
+	let parsedUrl = url.parse(req.url, true);
+	//get the path name             // get the object after the pathname
+	let     path = parsedUrl.pathname;
+    let     queryStringObject = parsedUrl.query;
+	// take out the extra slashes
+	let trimmedPath = path.replace(/^\/+|\/+$/g,'');
+    // get the url params
+    const params = helpers.parseParams(trimmedPath.replace("api/population/", ""));
+    // get the route 
+    const route = helpers.findRoute(params, trimmedPath);
+	// need to make this route be available to all changes
+ 	let chosenHandler = typeof(server.router[route]) !== 'undefined'? server.router[route] : routes.notFound;
+    // this is incredible
+	let decoder = new StringDecoder('utf-8'); // use to convert buffer to string
+	let buffer = '';
+	//receives an body
+	req.on(STREAM.DATA, function(data){
+		// decode buffer object into a string
+		buffer += decoder.write(data);
+	});
+	req.on(STREAM.END, function(){
+
+		buffer += decoder.end();
+		let data = {
+			'path': trimmedPath, // the pathname
+			'method': method, // [ get, post , put, delete ]
+			'headers': headers,
+            // Take it as a string 
+            //  helpers.parseJsonToObject(buffer)
+			'body': buffer,
+            'params': params,
+            'query': queryStringObject, // objects after the path name
+		};
+
+        const callback = function(statusCode, payload){ // the callback comes from the router
+			// check if its a number
+			statusCode = typeof(statusCode) == 'number' ? statusCode : STATUS_CODE.OK;
+			// check if its an object
+			payload = typeof(payload) == 'object'? payload : {};
+			// json to string
+			let payloadString = JSON.stringify(payload);
+			//parse this as if it was json
+			res.setHeader('Content-Type', 'application/json');
+			res.writeHead(statusCode);
+			res.end(payloadString);
+		};
+	// 	// base on the route that was chosen
+        if(chosenHandler){
+            chosenHandler(data, callback);
+        }else{
+            callback(STATUS_CODE.BAD_REQUEST, {'Error' : ERROR_MESSAGE.NOT_FOUND}) 
+        }
+	});
+};
+
+
+server.init = function() {
+    // Open Port For server to listen
+    server.httpServer.listen(PORT, ()=> {
+            console.log('server is Working '+ PORT );
+    });
+};
+
+
+
+server.init();

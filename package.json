@@ -1,0 +1,11 @@
+{
+  "name": "trazi",
+  "version": "1.0.0",
+  "description": "city population service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
