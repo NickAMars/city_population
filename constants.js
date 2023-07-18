@@ -27,4 +27,3 @@ constants.ERROR_MESSAGE = {
 };
 
 module.exports = constants;
-

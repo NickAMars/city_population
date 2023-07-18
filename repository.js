@@ -2,8 +2,7 @@ const fs        = require('fs');
 const helpers =require('./helpers');
 const {STATUS_CODE}     = require('./constants');
 const Country = require('./country.module');
-
-// const writeStream = fs.createWriteStream(__dirname+"/data", {encoding: 'utf8'});
+const Graph = require('./graph');
 
 const respository = {};
     respository.graph = null;
@@ -16,30 +15,24 @@ const respository = {};
         readStream.on('end', function(){
             const graph = new Graph();
             // store data in body
-            respository.body  = helpers.convertData(data);
-            // add to a binary search tree
+            helpers.convertData(data, graph);
+            respository.graph = graph;
         });
     } 
+    //FETCH
     respository.fetchData  =  function ({city, state}){
-        // use a bindary search tree to improve performance
-        const location = this.findCountry({city, state});
-        return location;
+        return this.graph.search(state, city);
     }
+    //UPDATE OR CREATE
     respository.updateData = function({city, state}, population){
-        const location = this.findCountry({city, state});
-        if(!location){
-            const country = new Country (city, state, population);
-            this.body.push(country);
-            return { status : STATUS_CODE.CREATED, location: country};
+        const location = this.graph.search(state, city);
+        if(!location){// create
+            this.graph.insert(new Country (city, state, population));
+            return { status : STATUS_CODE.CREATED};
         }
-        // update location
+        // update
         location.population = population;
-        return { status : STATUS_CODE.OK, location};
-    }
-    respository.findCountry = function({city, state}){
-        return this.body.find( location =>  
-            location.city.toLowerCase() === city.toLowerCase()
-            && location.state.toLowerCase() === state.toLowerCase());
+        return { status : STATUS_CODE.OK};
     }
 
 

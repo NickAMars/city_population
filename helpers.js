@@ -30,10 +30,11 @@ helpers.findRoute = function(params, path){
   return pathArray.join("/");
 };
 
-helpers.convertData = function(populations){
-  populations = populations.split("\n").map(population => {
-      return new Country (...population.replace('\r', '').split(','));
-    
+helpers.convertData = function(populations, graph){
+  // populate graph
+  populations.split("\n").forEach(population => {
+      const country = new Country (...population.replace('\r', '').split(','))
+      graph.insert(country);
   });
 };
 
