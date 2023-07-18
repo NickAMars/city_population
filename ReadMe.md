@@ -10,6 +10,7 @@ Application has the Controller and Repository layer. The Controller has the two 
 ## API supported routes
 
 `GET http://127.0.0.1:5555/api/population/state/:state/city/:city`
+
 `PUT http://127.0.0.1:5555/api/population/state/:state/city/:city`
 
 ## Ways to improve throughput
