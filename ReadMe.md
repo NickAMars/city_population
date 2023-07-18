@@ -23,5 +23,3 @@ Please use a seperator such as ```%20``` instead of passing a space. example :
 or
 
 ```http://127.0.0.1:5555/api/population/state/Illinois/city/Balance%20of%20Olneyship```
-## Ways to improve throughput
-You could increase the availability of this application by creating cluster on different ports for the amount of cors that are available in the user cpu.
