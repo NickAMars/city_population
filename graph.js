@@ -13,7 +13,11 @@ class Graph{
         }
     }
     search(state, city){
-        return this.root[state.toLowerCase()].find(country=> country.city.toLowerCase() === city.toLowerCase());
+        const values = this.root[state.toLowerCase()];
+        if (values){
+            return values.find(country=> country.city.toLowerCase() === city.toLowerCase());
+        }
+        return null;
     }
 }
 
