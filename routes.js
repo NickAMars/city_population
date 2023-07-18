@@ -1,6 +1,6 @@
 
 const {STATUS_CODE}     = require('./constants');
-
+const {ERROR_MESSAGE}               = require('./constants');
 
 const controller = (repository)=>{
   let route ={};
@@ -24,14 +24,19 @@ const controller = (repository)=>{
   
   route._population = {};
   route._population.get = function(data, callback){
-      console.log("DATA : ",data);
-      repository.fetchData();
-      callback(STATUS_CODE.OK);
+      const location = repository.fetchData(data.params);
+      if(!location) return callback(STATUS_CODE.BAD_REQUEST, { [ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.STATE_CITY_NOT_FOUND});
+      return callback(STATUS_CODE.OK, location);
   }
   route._population.put = function(data, callback){
-      console.log("DATA : ",data);
-      repository.updateData();
-      callback(STATUS_CODE.OK);
+    if(isNaN(+data.body)){
+      return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.POPULATION_STRING_ERROR});
+    }
+    if(+data.body < 0){
+      return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.POPULATION_NEGATIVE_ERROR});
+    }
+    const response = repository.updateData(data.params, data.body);
+    return callback(response.status);
   }
 
   return route;

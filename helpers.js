@@ -1,4 +1,4 @@
-
+const Country = require('./country.module');
 //Constainer for all the Helpers
 let helpers = {};
 // PARSE a JSON string to an object
@@ -14,8 +14,8 @@ helpers.parseParams = function(str){ // sending to file
   const paramsArr = str.split("/");
   if(paramsArr.length === 4 && paramsArr[0] === 'state' && paramsArr[2] === 'city'){
     return {
-      state: paramsArr[1].toLowerCase(),
-      city: paramsArr[3].toLowerCase()
+      state: paramsArr[1],
+      city: paramsArr[3]
     }
   }
   return {};
@@ -30,11 +30,12 @@ helpers.findRoute = function(params, path){
   return pathArray.join("/");
 };
 
-helpers.convertData = function(populations){
-  populations = populations.split("\n").map(population => {
-    return population.replace('\r', '').split(',')
+helpers.convertData = function(populations, graph){
+  // populate graph
+  populations.split("\n").forEach(population => {
+      const country = new Country (...population.replace('\r', '').split(','))
+      graph.insert(country);
   });
-  return populations;
 };
 
 module.exports = helpers;

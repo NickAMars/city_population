@@ -20,7 +20,10 @@ constants.ROUTES=   {
 };
 constants.ERROR_MESSAGE = {
     ERROR : 'Error',
-    NOT_FOUND : 'Route does not exist'
+    NOT_FOUND : 'Route does not exist',
+    STATE_CITY_NOT_FOUND : 'state/city combo cannot be found',
+    POPULATION_NEGATIVE_ERROR : 'population cannot be a negative value',
+    POPULATION_STRING_ERROR : 'population cannot be a string',
 };
 
 module.exports = constants;

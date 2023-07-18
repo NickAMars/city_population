@@ -1,11 +1,11 @@
 const fs        = require('fs');
 const helpers =require('./helpers');
-
-
-// const writeStream = fs.createWriteStream(__dirname+"/data", {encoding: 'utf8'});
+const {STATUS_CODE}     = require('./constants');
+const Country = require('./country.module');
+const Graph = require('./graph');
 
 const respository = {};
-    respository.body = null;
+    respository.graph = null;
     respository.init = function (){
         const readStream = fs.createReadStream(__dirname+"/city_populations.csv", {encoding: 'utf8', hightWaterMark : 32 * 1024});
         let data = '';
@@ -13,16 +13,26 @@ const respository = {};
             data+= chunk;
         })
         readStream.on('end', function(){
+            const graph = new Graph();
             // store data in body
-            respository.body  = helpers.convertData(data);
+            helpers.convertData(data, graph);
+            respository.graph = graph;
         });
     } 
-    respository.fetchData  =  function (){
-        // console.log(body)
-        console.log('fetch Data');
+    //FETCH
+    respository.fetchData  =  function ({city, state}){
+        return this.graph.search(state, city);
     }
-    respository.updateData = function(){
-        console.log('update Data');
+    //UPDATE OR CREATE
+    respository.updateData = function({city, state}, population){
+        const location = this.graph.search(state, city);
+        if(!location){// create
+            this.graph.insert(new Country (city, state, population));
+            return { status : STATUS_CODE.CREATED};
+        }
+        // update
+        location.population = population;
+        return { status : STATUS_CODE.OK};
     }
 
 

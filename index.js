@@ -26,7 +26,7 @@ server.unifidedServer = function(req, res){
 	let parsedUrl = url.parse(req.url, true);
 	//get the path name             // get the object after the pathname
 	let     path = parsedUrl.pathname;
-    let     queryStringObject = parsedUrl.query;
+    let     query = parsedUrl.query;
 	// take out the extra slashes
 	let trimmedPath = path.replace(/^\/+|\/+$/g,'');
     // get the url params
@@ -35,7 +35,6 @@ server.unifidedServer = function(req, res){
     const route = helpers.findRoute(params, trimmedPath);
 	// need to make this route be available to all changes
  	let chosenHandler = typeof(server.router[route]) !== 'undefined'? server.router[route] : routes.notFound;
-    // this is incredible
 	let decoder = new StringDecoder('utf-8'); // use to convert buffer to string
 	let buffer = '';
 	//receives an body
@@ -48,26 +47,30 @@ server.unifidedServer = function(req, res){
 		buffer += decoder.end();
 		let data = {
 			'path': trimmedPath, // the pathname
-			'method': method, // [ get, post , put, delete ]
-			'headers': headers,
-            // Take it as a string 
+			// Take it as a string 
             //  helpers.parseJsonToObject(buffer)
 			'body': buffer,
-            'params': params,
-            'query': queryStringObject, // objects after the path name
+			method, // [ get, post , put, delete ]
+			headers,
+            params,
+            query, // objects after the path name
 		};
 
         const callback = function(statusCode, payload){ // the callback comes from the router
 			// check if its a number
 			statusCode = typeof(statusCode) == 'number' ? statusCode : STATUS_CODE.OK;
 			// check if its an object
-			payload = typeof(payload) == 'object'? payload : {};
+			payload = typeof(payload) == 'object'? payload : null;
 			// json to string
-			let payloadString = JSON.stringify(payload);
+			let payloadString = payload?  JSON.stringify(payload): null;
 			//parse this as if it was json
 			res.setHeader('Content-Type', 'application/json');
 			res.writeHead(statusCode);
-			res.end(payloadString);
+			if(payloadString){
+				res.end(payloadString);
+			}else{
+				res.end();
+			}
 		};
 	// 	// base on the route that was chosen
         if(chosenHandler){
@@ -81,9 +84,7 @@ server.unifidedServer = function(req, res){
 
 server.init = function() {
     // Open Port For server to listen
-    server.httpServer.listen(PORT, ()=> {
-            console.log('server is Working '+ PORT );
-    });
+    server.httpServer.listen(PORT, ()=> {});
 };
 
 
