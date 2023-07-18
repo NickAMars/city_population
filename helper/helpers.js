@@ -1,4 +1,4 @@
-const Country = require('./country.module');
+const Country = require('../modules/country.module');
 //Constainer for all the Helpers
 let helpers = {};
 // PARSE a JSON string to an object
@@ -33,8 +33,10 @@ helpers.findRoute = function(params, path){
 helpers.convertData = function(populations, graph){
   // populate graph
   populations.split("\n").forEach(population => {
+    if(population){
       const country = new Country (...population.replace('\r', '').split(','))
       graph.insert(country);
+    }
   });
 };
 
