@@ -16,12 +16,12 @@ Application has the Controller and Repository layer. The Controller has the two 
 ## URL Parameter
 ```:state``` or  ```:city```
 Url parameters that contain a space 
-Please use a seperator such as ```+``` instead of passing a space. example : 
+Please use a seperator such as ```%20``` instead of passing a space. example : 
 
-```http://127.0.0.1:5555/api/population/state/Florida/city/Palm+Shores```
+```http://127.0.0.1:5555/api/population/state/Florida/city/Palm%20Shores```
 
 or
 
-```http://127.0.0.1:5555/api/population/state/Illinois/city/Balance+of+Olneyship```
+```http://127.0.0.1:5555/api/population/state/Illinois/city/Balance%20of%20Olneyship```
 ## Ways to improve throughput
 You could increase the availability of this application by creating cluster on different ports for the amount of cors that are available in the user cpu.

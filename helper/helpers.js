@@ -15,8 +15,8 @@ helpers.parseParams = function(str){ // sending to file
   if(paramsArr.length === 4 && paramsArr[0] === 'state' && paramsArr[2] === 'city'){
     // some of these properties have space between them 
     return {
-      state: paramsArr[1].replace(/\+/g,' ').trim(),
-      city: paramsArr[3].replace(/\+/g,' ').trim()
+      state: paramsArr[1].replace(/\%20/g,' ').trim(),
+      city: paramsArr[3].replace(/\%20/g,' ').trim()
     }
   }
   return {};
