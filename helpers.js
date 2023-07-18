@@ -35,7 +35,6 @@ helpers.convertData = function(populations){
       return new Country (...population.replace('\r', '').split(','));
     
   });
-  return populations;
 };
 
 module.exports = helpers;

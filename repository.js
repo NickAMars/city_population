@@ -6,7 +6,7 @@ const Country = require('./country.module');
 // const writeStream = fs.createWriteStream(__dirname+"/data", {encoding: 'utf8'});
 
 const respository = {};
-    respository.body = null;
+    respository.graph = null;
     respository.init = function (){
         const readStream = fs.createReadStream(__dirname+"/city_populations.csv", {encoding: 'utf8', hightWaterMark : 32 * 1024});
         let data = '';
@@ -14,6 +14,7 @@ const respository = {};
             data+= chunk;
         })
         readStream.on('end', function(){
+            const graph = new Graph();
             // store data in body
             respository.body  = helpers.convertData(data);
             // add to a binary search tree
