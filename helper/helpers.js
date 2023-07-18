@@ -11,11 +11,12 @@ helpers.parseJsonToObject = function(str){ // sending to file
     }
 };
 helpers.parseParams = function(str){ // sending to file
-  const paramsArr = str.split("/");
+  const paramsArr = str.split('/');
   if(paramsArr.length === 4 && paramsArr[0] === 'state' && paramsArr[2] === 'city'){
+    // some of these properties have space between them 
     return {
-      state: paramsArr[1],
-      city: paramsArr[3]
+      state: paramsArr[1].replace(/\+/g,' ').trim(),
+      city: paramsArr[3].replace(/\+/g,' ').trim()
     }
   }
   return {};
