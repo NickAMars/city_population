@@ -14,7 +14,6 @@ class CountryRespository{
             data+= chunk;
         });
         readStream.on('end', function(){
-            // store data in body
             helpers.convertData(data, this.graph);
         }.bind(this));
     }

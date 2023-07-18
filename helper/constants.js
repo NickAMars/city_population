@@ -24,6 +24,7 @@ constants.ERROR_MESSAGE = {
     STATE_CITY_NOT_FOUND : 'state/city combo cannot be found',
     POPULATION_NEGATIVE_ERROR : 'population cannot be a negative value',
     POPULATION_STRING_ERROR : 'population cannot be a string',
+    STATE_OR_CITY_PARAM_ERROR : 'state/city is missing from url parameter',
 };
 
 module.exports = constants;

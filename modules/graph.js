@@ -4,12 +4,14 @@ class Graph{
         this.root = {};
     }
     insert(country){
-        const state = country.state.toLowerCase()
-        const countries = this.root[state];
-        if(!countries){
-            this.root[state] = [country];
-        }else{
-            this.root[state].push(country);
+        const state = country.state? country.state.toLowerCase() : null;
+        if(state){
+            const countries = this.root[state];
+            if(!countries){
+                this.root[state] = [country];
+            }else{
+                this.root[state].push(country);
+            }
         }
     }
     search(state, city){

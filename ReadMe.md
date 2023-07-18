@@ -13,5 +13,15 @@ Application has the Controller and Repository layer. The Controller has the two 
 
 `PUT http://127.0.0.1:5555/api/population/state/:state/city/:city`
 
+## URL Parameter
+```:state``` or  ```:city```
+Url parameters that contain a space 
+Please use a seperator such as ```+``` instead of passing a space. example : 
+
+```http://127.0.0.1:5555/api/population/state/Florida/city/Palm+Shores```
+
+or
+
+```http://127.0.0.1:5555/api/population/state/Illinois/city/Balance+of+Olneyship```
 ## Ways to improve throughput
 You could increase the availability of this application by creating cluster on different ports for the amount of cors that are available in the user cpu.

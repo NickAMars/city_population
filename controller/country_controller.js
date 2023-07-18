@@ -20,6 +20,9 @@ class CountryController {
     }
   };
   get = function(data, callback){
+    if(!data.params.state || !data.params.city){
+      return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.STATE_OR_CITY_PARAM_ERROR});
+    }
     const location = this.repository.fetchData(data.params);
     if(!location) return callback(STATUS_CODE.BAD_REQUEST, { [ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.STATE_CITY_NOT_FOUND});
     return callback(STATUS_CODE.OK, location);
@@ -31,8 +34,11 @@ class CountryController {
     if(+data.body < 0){
       return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.POPULATION_NEGATIVE_ERROR});
     }
-    const response = this.repository.updateData(data.params, data.body);
-    return callback(response.status);
+    if(!data.params.state || !data.params.city){
+      return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.STATE_OR_CITY_PARAM_ERROR});
+    }
+      const response = this.repository.updateData(data.params, data.body);
+      return callback(response.status);
   }
 }
 
