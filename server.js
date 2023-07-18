@@ -15,50 +15,35 @@ const service = function(routes) {
 		[ROUTES.POPULATION]: routes.population
 	};
 	server.unifidedServer = function(req, res){
-		// get methods                              // gets an object
 		let method = req.method.toLowerCase(), headers = req.headers;
-		// gets the query parameters 
 		let parsedUrl = url.parse(req.url, true);
-		//get the path name             // get the object after the pathname
-		let     path = parsedUrl.pathname;
-		let     query = parsedUrl.query;
-		// take out the extra slashes
+		let path = parsedUrl.pathname;
+		let query = parsedUrl.query;
 		let trimmedPath = path.replace(/^\/+|\/+$/g,'');
-		// get the url params
 		const params = helpers.parseParams(trimmedPath.replace("api/population/", ""));
-		// get the route 
 		const route = helpers.findRoute(params, trimmedPath);
-		// need to make this route be available to all changes
 		let chosenHandler = typeof(server.router[route]) !== 'undefined'? server.router[route].bind(routes) : routes.notFound;
-		let decoder = new StringDecoder('utf-8'); // use to convert buffer to string
+		let decoder = new StringDecoder('utf-8');
 		let buffer = '';
-		//receives an body
 		req.on(STREAM.DATA, function(data){
-			// decode buffer object into a string
 			buffer += decoder.write(data);
 		});
 		req.on(STREAM.END, function(){
 
 			buffer += decoder.end();
 			let data = {
-				'path': trimmedPath, // the pathname
-				// Take it as a string 
-				//  helpers.parseJsonToObject(buffer)
+				'path': trimmedPath,
 				'body': buffer,
-				method, // [ get, post , put, delete ]
+				method,
 				headers,
 				params,
-				query, // objects after the path name
+				query,
 			};
-
-			const callback = function(statusCode, payload){ // the callback comes from the router
-				// check if its a number
+			//Callback to send back a response to user
+			const callback = function(statusCode, payload){
 				statusCode = typeof(statusCode) == 'number' ? statusCode : STATUS_CODE.OK;
-				// check if its an object
 				payload = typeof(payload) == 'object'? payload : null;
-				// json to string
 				let payloadString = payload?  JSON.stringify(payload): null;
-				//parse this as if it was json
 				res.setHeader('Content-Type', 'application/json');
 				res.writeHead(statusCode);
 				if(payloadString){
@@ -67,7 +52,7 @@ const service = function(routes) {
 					res.end();
 				}
 			};
-		// 	// base on the route that was chosen
+			//Check if route exist 
 			if(chosenHandler){
 				chosenHandler(data, callback);
 			}else{
