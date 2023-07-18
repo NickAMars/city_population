@@ -58,7 +58,7 @@ const service = function(routes) {
 		};
 		//THIS IS ONLY FOR THE BODY
 		//receives an body
-		if(headers['content-type']){
+		 if(headers['content-type'] === 'text/plain'){
 			req.on(STREAM.DATA, function(data){
 				// decode buffer object into a string
 				buffer += decoder.write(data);

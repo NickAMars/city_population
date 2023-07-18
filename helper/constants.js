@@ -25,6 +25,7 @@ constants.ERROR_MESSAGE = {
     POPULATION_NEGATIVE_ERROR : 'population cannot be a negative value',
     POPULATION_STRING_ERROR : 'population cannot be a string',
     STATE_OR_CITY_PARAM_ERROR : 'state/city is missing from url parameter',
+    BODY_ERROR : 'Body does not exist. Only support text/plain'
 };
 
 module.exports = constants;

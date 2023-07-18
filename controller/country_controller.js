@@ -28,6 +28,9 @@ class CountryController {
     return callback(STATUS_CODE.OK, location);
   }
   put = function(data, callback){
+    if(!data.body){
+      return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.BODY_ERROR});
+    }
     if(isNaN(+data.body)){
       return callback(STATUS_CODE.BAD_REQUEST, {[ERROR_MESSAGE.ERROR]: ERROR_MESSAGE.POPULATION_STRING_ERROR});
     }
